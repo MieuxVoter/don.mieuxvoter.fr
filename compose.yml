@@ -1,0 +1,19 @@
+services:
+  nginx:
+    image: nginx:1-alpine
+    restart: unless-stopped
+    configs:
+      - source: redirect
+        target: /etc/nginx/conf.d/default.conf
+    ports:
+      - "${SERVICE_PORT:-80}:80"
+
+configs:
+  redirect:
+    content: |
+      server {
+          listen       80;
+          listen  [::]:80;
+          access_log off;
+          return 301 ${REDIRECT_URL:?Error_Missing_Dot_Env};
+      }
